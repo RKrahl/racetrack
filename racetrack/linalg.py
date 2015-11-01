@@ -121,6 +121,9 @@ from collections import namedtuple
 from math import fabs, sqrt
 
 
+__all__ = ['Vector', 'Point', 'LineSegment']
+
+
 def sqr(x):
     """Return the square of x.
     """
