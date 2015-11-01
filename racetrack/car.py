@@ -5,15 +5,8 @@
 from racetrack.linalg import *
 import racetrack.track
 from racetrack.rules import isAccelerationAllowed
+from racetrack.exception import AccelerationNotAllowed
 
-
-class AccelerationNotAllowed(Exception):
-
-    def __init__(self, acceleration):
-        self.acceleration = acceleration
-        msg = ("Acceleration %s is beyond permissible bounds" % 
-               (str(acceleration)))
-        super(AccelerationNotAllowed, self).__init__(msg)
 
 class Car(object):
 

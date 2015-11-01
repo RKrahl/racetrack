@@ -22,3 +22,6 @@ permissions and limitations under the License.
 """
 
 __version__   = "0.1"
+
+
+from racetrack.exception import *

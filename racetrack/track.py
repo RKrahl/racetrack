@@ -6,17 +6,7 @@ This module defines the track, that is the playground for the game.
 
 from numbers import Integral
 from racetrack.linalg import *
-
-
-class Collision(Exception):
-
-    def __init__(self, move, barrier, point):
-        self.move = move
-        self.barrier = barrier
-        self.point = point
-        msg = ("Collision of move %s with barrier %s at point %s"
-               % (move, barrier, point))
-        super(Collision, self).__init__(msg)
+from racetrack.exception import CollisionError
 
 
 class Track(object):
@@ -53,4 +43,4 @@ class Track(object):
         for barrier in self.barriers:
             p = move & barrier
             if p:
-                raise Collision(move, barrier, p)
+                raise CollisionError(move, barrier, p)
