@@ -6,6 +6,16 @@ space.  E.g. points, vectors, and line segments, where a vector is the
 difference of two points and a line segment is defined by a starting
 and an end point.
 
+>>> Vector(x=3, y=4)
+Vector(x=3, y=4)
+>>> Vector(x=3.0, y=4.0)
+Vector(x=3.0, y=4.0)
+>>> Vector(x=3.2, y=4.8)
+Vector(x=3.2, y=4.8)
+>>> Vector(x="3.0", y="4.0")
+Traceback (most recent call last):
+  ...
+TypeError: Vector coordinates must be real numbers.
 >>> v = Vector(x=3, y=4)
 >>> v
 Vector(x=3, y=4)
@@ -56,6 +66,15 @@ True
 Traceback (most recent call last):
   ...
 TypeError: unsupported operand type(s) for +: 'Point' and 'Point'
+>>> p.isIntegral()
+True
+>>> v = Vector(x=2, y=6)
+>>> (p + v).isIntegral()
+True
+>>> (p + 0.5 * v).isIntegral()
+True
+>>> (p + 0.25 * v).isIntegral()
+False
 >>> l1 = LineSegment(Point(x=-1, y=-2), Point(x=5, y=1))
 >>> l1
 LineSegment(Point(x=-1, y=-2), Point(x=5, y=1))
@@ -90,7 +109,10 @@ True
 True
 
 Note: in the game, the positions of the race cars must be constraint
-to Points having integer coordinates.  But this is not enforced here.
+to Points having integer coordinates.  But this is not enforced here,
+coordinates of Vector and Point are only constraint to real numbers.
+This is needed to calculate intersection points of line segments.  But
+there is a test method Point.isIntegral().
 """
 
 from __future__ import division
@@ -108,6 +130,11 @@ def sqr(x):
 class Vector(namedtuple('Vector', ['x', 'y'])):
     """A Vector is the difference between two Ponts.
     """
+
+    def __new__(cls, x, y):
+        if not isinstance(x, Real) or not isinstance(y, Real):
+            raise TypeError("Vector coordinates must be real numbers.")
+        return super(Vector, cls).__new__(cls, x, y)
 
     def __eq__(self, other):
         """self == other."""
@@ -173,6 +200,11 @@ class Point(namedtuple('Point', ['x', 'y'])):
     """A Point in the space.
     """
 
+    def __new__(cls, x, y):
+        if not isinstance(x, Real) or not isinstance(y, Real):
+            raise TypeError("Point coordinates must be real numbers.")
+        return super(Point, cls).__new__(cls, x, y)
+
     def __eq__(self, other):
         """self == other."""
         if isinstance(other, Point):
@@ -212,6 +244,14 @@ class Point(namedtuple('Point', ['x', 'y'])):
             return Vector._make([(s - o) for (s, o) in zip(self, other)])
         else:
             return NotImplemented
+
+    def isIntegral(self):
+        """Return True if all coordinates are integral numbers."""
+        for c in self:
+            if not c == int(c):
+                return False
+        else:
+            return True
 
 
 class LineSegment(object):
@@ -309,3 +349,7 @@ class LineSegment(object):
             else:
                 # All four points coincide.
                 return self.p0
+
+    def isIntegral(self):
+        """Return True if both start and end point are integral."""
+        return self.p0.isIntegral() and self.p1.isIntegral()
