@@ -297,8 +297,8 @@ class LineSegment(object):
         """intersection Point of two LineSegments, if any.
         Return None if the line segments do not intersect.
         """
-        u = self.p1 - self.p0
-        v = other.p1 - other.p0
+        u = self.getVector()
+        v = other.getVector()
         w = other.p1 - self.p0
         d = u.x * v.y - v.x * u.y
         r = w.x * v.y - v.x * w.y
@@ -352,6 +352,10 @@ class LineSegment(object):
             else:
                 # All four points coincide.
                 return self.p0
+
+    def getVector(self):
+        """Return the Vector from start to end Point."""
+        return self.p1 - self.p0
 
     def isIntegral(self):
         """Return True if both start and end point are integral."""
