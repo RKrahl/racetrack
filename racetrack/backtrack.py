@@ -22,6 +22,7 @@ class SlowMotionBacktrack(object):
         self.step = -1
 
     def searchstep(self):
+
         # From the current position, consider all possible moves and
         # push them to the search stack.
         self.step += 1
@@ -30,24 +31,18 @@ class SlowMotionBacktrack(object):
             # finish reached, stand still.
             self.stack.append( (self.step, Vector(0,0)) )
         else:
-            if direct.x > 0:
-                if direct.y >= 0:
-                    dirs = [Vector(-1,0),Vector(0,-1),Vector(0,1),Vector(1,0)]
-                else:
-                    dirs = [Vector(-1,0),Vector(0,1),Vector(0,-1),Vector(1,0)]
-            elif direct.x < 0:
-                if direct.y >= 0:
-                    dirs = [Vector(1,0),Vector(0,-1),Vector(0,1),Vector(-1,0)]
-                else:
-                    dirs = [Vector(1,0),Vector(0,1),Vector(0,-1),Vector(-1,0)]
-            else:
-                if direct.y > 0:
-                    dirs = [Vector(0,-1),Vector(-1,0),Vector(1,0),Vector(0,1)]
-                else:
-                    dirs = [Vector(0,1),Vector(-1,0),Vector(1,0),Vector(0,-1)]
+            if direct.x > 0 and direct.y >= 0:
+                dirs = [ Vector(0,-1),Vector(-1,0),Vector(0,1),Vector(1,0) ]
+            elif direct.x <= 0 and direct.y > 0:
+                dirs = [ Vector(1,0),Vector(0,-1),Vector(-1,0),Vector(0,1) ]
+            elif direct.x < 0 and direct.y <= 0:
+                dirs = [ Vector(0,1),Vector(1,0),Vector(0,-1),Vector(-1,0) ]
+            elif direct.x >= 0 and direct.y < 0:
+                dirs = [ Vector(-1,0),Vector(0,1),Vector(1,0),Vector(0,-1) ]
             for d in dirs:
                 if (self.car.pos + d) not in self.car.path:
                     self.stack.append( (self.step, d) )
+
         # pop a possible move from the stack and try it.  Repeat if
         # the move fails.
         while True:
