@@ -27,21 +27,23 @@ class SlowMotionBacktrack(object):
         # push them to the search stack.
         self.step += 1
         direct = self.finish - self.car.pos
-        if direct == Vector(0,0):
-            # finish reached, stand still.
-            self.stack.append( (self.step, Vector(0,0)) )
+        if direct == Vector(0,0) or not self.stickSearchDir:
+            searchDir = direct
         else:
-            if direct.x > 0 and direct.y >= 0:
-                dirs = [ Vector(0,-1),Vector(-1,0),Vector(0,1),Vector(1,0) ]
-            elif direct.x <= 0 and direct.y > 0:
-                dirs = [ Vector(1,0),Vector(0,-1),Vector(-1,0),Vector(0,1) ]
-            elif direct.x < 0 and direct.y <= 0:
-                dirs = [ Vector(0,1),Vector(1,0),Vector(0,-1),Vector(-1,0) ]
-            elif direct.x >= 0 and direct.y < 0:
-                dirs = [ Vector(-1,0),Vector(0,1),Vector(1,0),Vector(0,-1) ]
-            for d in dirs:
-                if (self.car.pos + d) not in self.car.path:
-                    self.stack.append( (self.step, d) )
+            searchDir = self.searchDir
+        if searchDir.x > 0 and searchDir.y >= 0:
+            dirs = [ Vector(0,-1),Vector(-1,0),Vector(0,1),Vector(1,0) ]
+        elif searchDir.x <= 0 and searchDir.y > 0:
+            dirs = [ Vector(1,0),Vector(0,-1),Vector(-1,0),Vector(0,1) ]
+        elif searchDir.x < 0 and searchDir.y <= 0:
+            dirs = [ Vector(0,1),Vector(1,0),Vector(0,-1),Vector(-1,0) ]
+        elif searchDir.x >= 0 and searchDir.y < 0:
+            dirs = [ Vector(-1,0),Vector(0,1),Vector(1,0),Vector(0,-1) ]
+        else:
+            dirs = [ Vector(0,0) ]
+        self.searchDir = dirs[-1]
+        for d in dirs:
+            self.stack.append( (self.step, d) )
 
         # pop a possible move from the stack and try it.  Repeat if
         # the move fails.
@@ -53,14 +55,21 @@ class SlowMotionBacktrack(object):
             if step != self.step:
                 self.step = step
                 self.car.reset(step)
+                self.searchDir = dir
+            if (dir != Vector(0,0) and 
+                (self.car.pos + dir) in self.car.path):
+                continue
             try:
                 self.car.move(dir)
+                self.stickSearchDir = (dir != self.searchDir)
             except RuleViolationError:
                 pass
             else:
                 break
 
     def search(self):
+        self.searchDir = Vector(0,0)
+        self.stickSearchDir = False
         while not self.car.finished():
             self.searchstep()
 
