@@ -69,6 +69,8 @@ class Application(Frame):
         self.fileMenu = Menu(self.menuBar)
         self.menuBar.add_cascade(label='File', menu=self.fileMenu)
         self.fileMenu.add_command(label='Quit', command=self.quit)
+        self.viewMenu = Menu(self.menuBar)
+        self.menuBar.add_cascade(label='View', menu=self.viewMenu)
 
         self.trackview = TrackView(self, self.track, 
                                    borderwidth=2, relief=GROOVE)
@@ -83,6 +85,11 @@ class Application(Frame):
 
         self.trackview['xscrollcommand'] = self.xscroll.set
         self.trackview['yscrollcommand'] = self.yscroll.set
+
+        self.viewMenu.add_command(label='Zoom in', 
+                                  command=self.trackview.zoomIn)
+        self.viewMenu.add_command(label='Zoom out', 
+                                  command=self.trackview.zoomOut)
 
 app = Application()
 app.mainloop()
