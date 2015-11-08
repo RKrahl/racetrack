@@ -39,6 +39,29 @@ class Track(object):
     def addBarriers(self, barriers):
         self.barriers.extend(barriers)
 
+    def bbox(self):
+        """Return the size of the track.
+
+        The return value is a tuple (x0, y0, x1, y1) describing a
+        rectangle that encloses all barriers (including the boundary)
+        of the track.
+        """
+        xmin = None
+        xmax = None
+        ymin = None
+        ymax = None
+        for l in self.barriers:
+            for p in (l.p0, l.p1):
+                if xmin is None or p.x < xmin:
+                    xmin = p.x
+                if xmax is None or p.x > xmax:
+                    xmax = p.x
+                if ymin is None or p.y < ymin:
+                    ymin = p.y
+                if ymax is None or p.y > ymax:
+                    ymax = p.y
+        return (xmin, ymin, xmax, ymax)
+
     def checkCollision(self, move):
         for barrier in self.barriers:
             p = move & barrier
