@@ -68,7 +68,8 @@ class Application(Frame):
         top['menu'] = self.menuBar
         self.fileMenu = Menu(self.menuBar)
         self.menuBar.add_cascade(label='File', menu=self.fileMenu)
-        self.fileMenu.add_command(label='Quit', command=self.quit)
+        self.fileMenu.add_command(label='Quit', command=self.quit, 
+                                  accelerator="Ctrl-q")
         self.viewMenu = Menu(self.menuBar)
         self.menuBar.add_cascade(label='View', menu=self.viewMenu)
 
@@ -87,9 +88,15 @@ class Application(Frame):
         self.trackview['yscrollcommand'] = self.yscroll.set
 
         self.viewMenu.add_command(label='Zoom in', 
-                                  command=self.trackview.zoomIn)
+                                  command=self.trackview.zoomIn, 
+                                  accelerator="Ctrl-+")
         self.viewMenu.add_command(label='Zoom out', 
-                                  command=self.trackview.zoomOut)
+                                  command=self.trackview.zoomOut, 
+                                  accelerator="Ctrl--")
+
+        self.bind_all("<Control-q>", lambda e:self.quit())
+        self.bind_all("<Control-plus>", self.trackview.zoomIn)
+        self.bind_all("<Control-minus>", self.trackview.zoomOut)
 
 app = Application()
 app.mainloop()
