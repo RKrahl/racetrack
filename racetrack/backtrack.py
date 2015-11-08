@@ -49,19 +49,18 @@ class SlowMotionBacktrack(object):
         # the move fails.
         while True:
             try:
-                (step, dir) = self.stack.pop()
+                (step, d) = self.stack.pop()
             except IndexError:
                 raise RuntimeError("No solution found.")
             if step != self.step:
                 self.step = step
                 self.car.reset(step)
-                self.searchDir = dir
-            if (dir != Vector(0,0) and 
-                (self.car.pos + dir) in self.car.path):
+                self.searchDir = d
+            if (d != Vector(0,0) and (self.car.pos + d) in self.car.path):
                 continue
             try:
-                self.car.move(dir)
-                self.stickSearchDir = (dir != self.searchDir)
+                self.car.move(d)
+                self.stickSearchDir = (d != self.searchDir)
             except RuleViolationError:
                 pass
             else:
