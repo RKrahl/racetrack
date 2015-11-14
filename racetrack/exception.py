@@ -28,3 +28,9 @@ class AccelerationNotAllowed(RuleViolationError):
                (str(acceleration)))
         super(AccelerationNotAllowed, self).__init__(msg)
 
+
+class NoSolutionError(Exception):
+    """No solution found.
+    """
+    def __init__(self):
+        super(NoSolutionError, self).__init__("No solution found.")
