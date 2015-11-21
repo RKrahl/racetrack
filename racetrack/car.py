@@ -44,7 +44,7 @@ class Car(object):
         """Reset the car to an earlier position from its path.
         """
         if not (0 <= step < len(self.path)):
-            raise RuntimeError("Can not reset to step %d." % step)
+            raise ValueError("Can not reset to step %d." % step)
         self.path = self.path[:step+1]
         self.pos = self.path[step]
         if step > 0:
