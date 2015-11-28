@@ -4,7 +4,6 @@
 
 from racetrack.linalg import *
 import racetrack.car
-from racetrack.rules import isAccelerationAllowed
 from racetrack.exception import RuleViolationError, NoSolutionError
 
 
@@ -88,7 +87,7 @@ class ConstraintBacktrack(object):
         self.step = len(car.path) - 2
         self.maxsteps = maxsteps
         # compile a list of all allowed accelerations.
-        self._accel = filter(isAccelerationAllowed, 
+        self._accel = filter(self.car.accelerationRule.isAllowed, 
                              [Vector(x,y) 
                               for x in range(-10,11) 
                               for y in range(-10,11)])

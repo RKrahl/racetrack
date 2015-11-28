@@ -5,24 +5,43 @@
 from racetrack.linalg import *
 
 
-# Set isAccelerationAllowed to the rule of choice or define your own.
+class AccelerationRule(object):
+    """Defines the maximal allowed acceleration.
 
-def eight_neighbours_rule(v):
+    This is an abstract class that defines the interface to
+    acceleration rules.  Concrete rules are derived from this class
+    and must define the class variables Norm and AccelMax.  Note that
+    (child classes of) AccelerationRule only defines a class method
+    and does not need to get instatiated.
+    """
+
+    Norm = None
+    AccelMax = None
+
+    @classmethod
+    def isAllowed(cls, accel):
+        if cls.Norm is None or cls.AccelMax is None:
+            raise NotImplemented
+        return cls.Norm(accel) <= cls.AccelMax
+
+
+class EightNeighboursRule(AccelerationRule):
     """Eight neighbours rule: 
     the acceleration is constraint to the eight neighbours of zero.
     """
-    return v.norminf() <= 1
+    Norm = Vector.norminf
+    AccelMax = 1
 
-def four_neighbours_rule(v):
+class FourNeighboursRule(AccelerationRule):
     """Four neighbours rule: 
     the acceleration is constraint to the four direct neighbours of zero.
     """
-    return v.norm1() <= 1
+    Norm = Vector.norm1
+    AccelMax = 1
 
-def euclidean_ten_rule(v):
+class EuclideanTenRule(AccelerationRule):
     """Euclidean 10 rule: 
     the Euclidean norm of the acceleration is bound to less or equel ten.
     """
-    return v.norm2() <= 10
-
-isAccelerationAllowed = eight_neighbours_rule
+    Norm = Vector.norm2
+    AccelMax = 10

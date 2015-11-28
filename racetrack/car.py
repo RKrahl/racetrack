@@ -4,7 +4,7 @@
 
 from racetrack.linalg import *
 import racetrack.track
-from racetrack.rules import isAccelerationAllowed
+import racetrack.rules
 from racetrack.exception import AccelerationNotAllowed
 
 
@@ -13,6 +13,7 @@ class Car(object):
     def __init__(self, track):
         self.track = track
         self.path = [ track.start ]
+        self.accelerationRule = racetrack.rules.EightNeighboursRule
         self.pos = track.start
         self.velocity = Vector(0, 0)
 
@@ -34,7 +35,7 @@ class Car(object):
         self.track.checkCollision(move)
         newvel = move.getVector()
         acceleration = newvel - self.velocity
-        if not isAccelerationAllowed(acceleration):
+        if not self.accelerationRule.isAllowed(acceleration):
             raise AccelerationNotAllowed(acceleration)
         self.path.append(newpos)
         self.pos = newpos
